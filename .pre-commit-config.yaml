@@ -1,5 +1,5 @@
 repos:
-  - repo: github.com/hadolint/hadolint
+  - repo: https://github.com/hadolint/hadolint
     rev: v2.12.0
     hooks:
       - id: hadolint
