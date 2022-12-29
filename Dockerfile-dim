@@ -2,28 +2,25 @@ from ubuntu:jammy
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt update -y && apt install -y make gcc g++ cmake git build-essential autoconf libtool make libssl-dev zlib1g-dev \
-libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev pkg-config \
-libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python3-openssl libjson-c5 libjson-c-dev uuid numactl libnuma-dev \
-libudev-dev libnl-3-dev libnl-route-3-dev ninja-build valgrind python3-dev cython3 python3-docutils pandoc
-
-# ENV PKG_CONFIG_PATH /usr/local/lib/pkgconfig
+RUN apt-get update -y \
+&& apt-get upgrade -y \
+&& apt-get install -y --no-install-recommends \
+  make gcc g++ cmake git build-essential ca-certificates autoconf automake libtool \
+  libjson-c-dev libssl-dev zlib1g-dev \
+  libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev pkg-config \
+  libncursesw5-dev xz-utils tk-dev libffi-dev liblzma-dev python3-openssl libjson-c5 \
+  libjson-c-dev uuid numactl libnuma-dev \
+  libudev-dev libnl-3-dev libnl-route-3-dev ninja-build valgrind python3-dev cython3 \
+  python3-docutils pandoc \
+&& apt-get clean autoclean
 
 # install rdma-core
-RUN git clone https://github.com/linux-rdma/rdma-core \
+RUN git clone -b v41.0 --depth 1 https://github.com/linux-rdma/rdma-core \
 && cd rdma-core \
-&& git checkout v41.0 \
 && bash build.sh
 
-# # install opa-psm2 - only works with x86_64
-# RUN git clone https://github.com/cornelisnetworks/opa-psm2 \
-# && cd opa-psm2 \
-# && git checkout PSM2_11.2.230 \
-# && make \
-# && make install
-
 # install ucx
-RUN git clone https://github.com/openucx/ucx.git ucx \
+RUN git clone -b v1.13.1 --depth 1 https://github.com/openucx/ucx \
 && cd ucx \
 && ./autogen.sh \
 && mkdir build \
@@ -33,9 +30,8 @@ RUN git clone https://github.com/openucx/ucx.git ucx \
 && make install
 
 # install libfabric
-RUN git clone https://github.com/ofiwg/libfabric.git \
+RUN git clone -b v1.16.1 --depth 1 https://github.com/ofiwg/libfabric \
 && cd libfabric \
-&& git checkout v1.16.1 \
 && mkdir build \
 && ./autogen.sh \
 && cd build \
@@ -44,7 +40,7 @@ RUN git clone https://github.com/ofiwg/libfabric.git \
 && make install
 
 # install bmi
-RUN git clone https://github.com/radix-io/bmi.git \
+RUN git clone -b v2.8.1 --depth 1 https://github.com/radix-io/bmi \
 && cd bmi \
 && git checkout v2.8.1 \
 && mkdir build \
@@ -55,9 +51,8 @@ RUN git clone https://github.com/radix-io/bmi.git \
 && make install
 
 # install openpa
-RUN git clone https://github.com/pmodels/openpa.git \
+RUN git clone -b v1.0.4 --depth 1 https://github.com/pmodels/openpa \
 && cd openpa \
-&& git checkout v1.0.4 \
 && ./autogen.sh \
 && mkdir build \
 && cd build \
@@ -66,22 +61,28 @@ RUN git clone https://github.com/pmodels/openpa.git \
 && make install
 
 # install mercury
-RUN git clone --recurse-submodules https://github.com/mercury-hpc/mercury.git && cd mercury \
-&& git checkout v2.2.0 \
-&& mkdir build && cd build && \
-cmake -DMERCURY_USE_SELF_FORWARD:BOOL=ON \
+RUN git clone -b v2.2.0 --depth 1 --recurse-submodules --shallow-submodules https://github.com/mercury-hpc/mercury \
+&& cd mercury \
+&& mkdir build \
+&& cd build \
+&& cmake -DMERCURY_USE_SELF_FORWARD:BOOL=ON \
  -DBUILD_TESTING:BOOL=ON -DMERCURY_USE_BOOST_PP:BOOL=ON \
  -DNA_USE_OFI=ON \
  -DBUILD_SHARED_LIBS:BOOL=ON \
  -DCMAKE_BUILD_TYPE:STRING=Debug ../ \
- && make \
- && make install
+&& make \
+&& make install
 
 # install argobots
-RUN git clone https://github.com/pmodels/argobots.git && cd argobots && ./autogen.sh && ./configure && make && make install 
+RUN git clone --depth 1 https://github.com/pmodels/argobots \
+&& cd argobots \
+&& ./autogen.sh \
+&& ./configure \
+&& make \
+&& make install 
 
 # install mochi-margo
-RUN git clone https://github.com/mochi-hpc/mochi-margo.git \
+RUN git clone -b v0.11.1 --depth 1 https://github.com/mochi-hpc/mochi-margo \
 && cd mochi-margo \
 && autoupdate \
 && ./prepare.sh \
@@ -92,23 +93,28 @@ RUN git clone https://github.com/mochi-hpc/mochi-margo.git \
 && make \
 && make install
 
-ENV PYENV_ROOT="/pyenv"
-# install pyenv
-RUN curl https://pyenv.run | bash
+# install python versions
+RUN apt-get install -y --no-install-recommends \
+  gpg-agent software-properties-common \
+&& apt-get update -y \
+&& add-apt-repository ppa:deadsnakes/ppa \
+&& apt-get update -y \
+&& apt-get install -y \
+  python3.7 python3.7-dev python3.7-venv \
+  python3.8 python3.8-dev python3.8-venv \
+  python3.9 python3.9-dev python3.9-venv \
+  python3.10 python3.10-dev python3.10-venv \
+&& apt-get clean autoclean
 
-ENV PATH="$PYENV_ROOT/bin:$PATH"
-RUN echo 'eval "$(pyenv init -)"'
-RUN pyenv install 3.7.15 && pyenv install 3.8.15 && pyenv install 3.9.15 && pyenv install 3.10.8 \
-&& echo 'eval "$(pyenv init -)"' >> $HOME/.bashrc && echo "pyenv shell 3.9.15" >> $HOME/.bashrc
 
-# install py-mochi-margo on all python versions
-RUN pkg-config --validate margo && eval "$(pyenv init -)" && pyenv shell 3.7.15 \
-&& python -m pip install --upgrade setuptools pip tox virtualenv \
-&& pyenv shell 3.8.15 \
-&& python -m pip install --upgrade setuptools pip tox virtualenv \
-&& pyenv shell 3.9.15 \ 
-&& python -m pip install --upgrade setuptools pip tox virtualenv \
-&& pyenv shell 3.10.8 \
-&& python -m pip install --upgrade setuptools pip tox virtualenv
+# add tox install to path via virtualenv
+RUN mkdir -p /home/root/opt/bin \
+&& python3.9 -m venv /home/root/opt/venv \
+&& . /home/root/opt/venv/bin/activate \
+&& pip install tox virtualenv \
+&& cd /home/root/opt/bin \
+&& ln -s /home/root/opt/venv/bin/tox tox \
+&& ln -s /home/root/opt/venv/bin/virtualenv virtualenv
+ENV PATH="/home/root/opt/bin:$PATH"
 
 ENV LD_LIBRARY_PATH="/usr/local/lib"
