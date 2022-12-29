@@ -7,7 +7,7 @@ ENV PROXYSTORE_SSL_ARGS $SSL_ARGS
 
 RUN apt-get update
 RUN apt-get install -y gcc
-RUN apt-get clea autoclean
+RUN apt-get clean autoclean
 
 RUN pip install --pre proxystore[endpoints]
 
