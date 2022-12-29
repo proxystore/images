@@ -17,6 +17,7 @@ jobs:
         include:
           - dockerfile: Dockerfile-dim
             image_name: proxystore-dim
+            description: Distributed in-memory store testing image.
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -41,10 +42,11 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.image_name }}
+          labels: |
+            org.opencontainers.image.description=${{ matrix.description }}
           tags: |
-            type=schedule
-            type=schedule,pattern=nightly
-            type=schedule,pattern={{date 'YYYYMMDD'}}
+            type=raw,value=nightly
+            type=raw,pattern={{date 'YYYY-MM-DD'}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
