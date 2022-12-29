@@ -100,6 +100,7 @@ RUN apt-get install -y --no-install-recommends \
 && add-apt-repository ppa:deadsnakes/ppa \
 && apt-get update -y \
 && apt-get install -y \
+  python3-pip \
   python3.7 python3.7-dev python3.7-venv \
   python3.8 python3.8-dev python3.8-venv \
   python3.9 python3.9-dev python3.9-venv \
@@ -111,10 +112,26 @@ RUN apt-get install -y --no-install-recommends \
 RUN mkdir -p /home/root/opt/bin \
 && python3.9 -m venv /home/root/opt/venv \
 && . /home/root/opt/venv/bin/activate \
-&& pip install tox virtualenv \
+&& pip install --upgrade setuptools tox virtualenv \
 && cd /home/root/opt/bin \
 && ln -s /home/root/opt/venv/bin/tox tox \
 && ln -s /home/root/opt/venv/bin/virtualenv virtualenv
 ENV PATH="/home/root/opt/bin:$PATH"
+
+# pre-cache some packages
+RUN curl https://raw.githubusercontent.com/proxystore/proxystore/main/requirements-dev.txt --output /tmp/requirements-dev.txt \
+&& echo "aiortc\nhypercorn[uvloop]\npsutil\npython-daemon\nquart\nwebsockets" >> /tmp/requirements.txt \
+&& python3.7 -m venv /home/root/opt/venv3.7 \
+&& python3.8 -m venv /home/root/opt/venv3.8 \
+&& python3.9 -m venv /home/root/opt/venv3.9 \
+&& python3.10 -m venv /home/root/opt/venv3.10 \
+&& /home/root/opt/venv3.7/bin/pip install -r /tmp/requirements-dev.txt \
+&& /home/root/opt/venv3.8/bin/pip install -r /tmp/requirements-dev.txt \
+&& /home/root/opt/venv3.9/bin/pip install -r /tmp/requirements-dev.txt \
+&& /home/root/opt/venv3.10/bin/pip install -r /tmp/requirements-dev.txt \
+&& rm -rf /home/root/opt/venv3.7 \
+&& rm -rf /home/root/opt/venv3.9 \
+&& rm -rf /home/root/opt/venv3.9 \
+&& rm -rf /home/root/opt/venv3.10
 
 ENV LD_LIBRARY_PATH="/usr/local/lib"
