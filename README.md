@@ -5,7 +5,7 @@ Images are built weekly.
 
 | Dockerfile                                     | Details                    |
 | :--------------------------------------------- | :------------------------- |
-| [`Dockerfile-dim`](dockerfiles/Dockerfile-dim) | [Details](#Dockerfile-dim) |
+| [`Dockerfile-dim`](dockerfiles/Dockerfile-dim) | [Details](#dockerfile-dim) |
 
 ## Dockerfile-dim
 
