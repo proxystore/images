@@ -46,7 +46,7 @@ jobs:
             org.opencontainers.image.description=${{ matrix.description }}
           tags: |
             type=raw,value=nightly
-            type=raw,pattern={{date 'YYYY-MM-DD'}}
+            type=raw,value={{date 'YYYY-MM-DD'}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
