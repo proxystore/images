@@ -4,7 +4,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  verify-build:
     strategy:
       matrix:
         include:
