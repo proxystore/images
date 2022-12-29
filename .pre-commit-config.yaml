@@ -1,5 +1,21 @@
+ci:
+    autofix_prs: false
+
 repos:
-  - repo: https://github.com/hadolint/hadolint
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+    -   id: mixed-line-ending
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-added-large-files
+    -   id: check-yaml
+    -   id: check-merge-conflict
+-   repo: https://github.com/hadolint/hadolint
     rev: v2.12.0
     hooks:
-      - id: hadolint
+    -   id: hadolint
+-   repo: https://github.com/codespell-project/codespell
+    rev: v2.2.2
+    hooks:
+    -    id: codespell

@@ -25,5 +25,3 @@ To run the image once built, the following command can be used:
 This can be done as usual using tox
 
 `tox`
-
-
