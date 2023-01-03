@@ -3,7 +3,6 @@ from ubuntu:jammy
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y \
-&& apt-get upgrade -y \
 && apt-get install -y --no-install-recommends \
   make gcc g++ cmake git build-essential ca-certificates autoconf automake libtool \
   libjson-c-dev libssl-dev zlib1g-dev \
@@ -12,7 +11,8 @@ RUN apt-get update -y \
   libjson-c-dev uuid numactl libnuma-dev \
   libudev-dev libnl-3-dev libnl-route-3-dev ninja-build valgrind python3-dev cython3 \
   python3-docutils pandoc \
-&& apt-get clean autoclean
+&& apt-get clean autoclean \
+&& rm -rf /var/lib/apt/lists/*
 
 # install rdma-core
 RUN git clone -b v41.0 --depth 1 https://github.com/linux-rdma/rdma-core \
@@ -94,19 +94,18 @@ RUN git clone -b v0.11.1 --depth 1 https://github.com/mochi-hpc/mochi-margo \
 && make install
 
 # install python versions
-RUN apt-get install -y --no-install-recommends \
-  gpg-agent software-properties-common \
-&& apt-get update -y \
+RUN apt-get update -y \
+&& apt-get install -y --no-install-recommends gpg-agent software-properties-common \
 && add-apt-repository ppa:deadsnakes/ppa \
 && apt-get update -y \
-&& apt-get install -y \
+&& apt-get install -y --no-install-recommends \
   python3-pip \
   python3.7 python3.7-dev python3.7-venv \
   python3.8 python3.8-dev python3.8-venv \
   python3.9 python3.9-dev python3.9-venv \
   python3.10 python3.10-dev python3.10-venv \
-&& apt-get clean autoclean
-
+&& apt-get clean autoclean \
+&& rm -rf /var/lib/apt/lists/*
 
 # add tox install to path via virtualenv
 RUN mkdir -p /home/root/opt/bin \
@@ -120,7 +119,7 @@ ENV PATH="/home/root/opt/bin:$PATH"
 
 # pre-cache some packages
 RUN curl https://raw.githubusercontent.com/proxystore/proxystore/main/requirements-dev.txt --output /tmp/requirements-dev.txt \
-&& echo "aiortc\nhypercorn[uvloop]\npsutil\npython-daemon\nquart\nwebsockets" >> /tmp/requirements.txt \
+&& printf "aiortc\nhypercorn[uvloop]\npsutil\npython-daemon\nquart\nwebsockets" >> /tmp/requirements.txt \
 && python3.7 -m venv /home/root/opt/venv3.7 \
 && python3.8 -m venv /home/root/opt/venv3.8 \
 && python3.9 -m venv /home/root/opt/venv3.9 \

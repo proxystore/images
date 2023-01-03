@@ -5,11 +5,12 @@ from python:${PYTHON_VERSION}-slim-buster
 
 ENV PROXYSTORE_SSL_ARGS $SSL_ARGS
 
-RUN apt-get update
-RUN apt-get install -y gcc
-RUN apt-get clean autoclean
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends gcc g++ \
+  && apt-get clean autoclean \
+  && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --pre proxystore[endpoints]
+RUN pip install --pre "proxystore[endpoints]"
 
 EXPOSE 8765
 
