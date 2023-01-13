@@ -24,15 +24,16 @@ To effectively work on a system, the `Dockerfile-dim` image needs to be compiled
 
 For usage with Github Actions CI, a prebuilt image is provided.
 
-### Build
+### Pull and Run
+
+```bash
+$ docker run --rm -it --network host -v <local_path_to_proxystore_dir>:/proxystore ghcr.io/proxystore/proxystore-dim
+```
+
+### Build and Run
 
 ```bash
 $ docker build -t proxystore-dim -f dockerfiles/Dockerfile-dim .
-```
-
-### Run
-
-```bash
 $ docker run --rm -it --network host -v <local_path_to_proxystore_dir>:/proxystore proxystore-dim
 ```
 
@@ -48,16 +49,17 @@ This image installs the latest pre-release of ProxyStore from PyPI.
 
 **Warning:** this is not intended for production use and by default runs with no security features.
 
-### Build
+### Pull and Run
+
+```bash
+$ docker run --rm -it -p 8765:8765 --name relay ghcr.io/proxystore/proxystore-relay
+```
+
+### Build and Run
 
 ```bash
 $ docker build -t proxystore-relay -f dockerfiles/Dockerfile-relay .
-```
-
-### Run
-
-```bash
-docker run --rm -it -p 8765:8765 --name relay proxystore-relay
+$ docker run --rm -it -p 8765:8765 --name relay proxystore-relay
 ```
 
 To run with SSL/TLS:
