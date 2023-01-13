@@ -62,6 +62,7 @@ jobs:
           labels: |
             org.opencontainers.image.description=${{ matrix.description }}
           tags: |
+            type=raw,value=latest
             type=raw,value=nightly
             type=raw,value={{date 'YYYY-MM-DD'}}
 
