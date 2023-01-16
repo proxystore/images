@@ -1,4 +1,4 @@
-# Proxystore Dockerfiles
+# Proxystore Images
 
 This repo contains Dockerfiles used for testing Proxystore's code.
 "Nightly" image builds are created on the 1st and 15th of the month or when the corresponding Dockerfile is changed.
