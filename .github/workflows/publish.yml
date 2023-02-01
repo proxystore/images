@@ -2,8 +2,8 @@ name: publish
 
 on:
   schedule:
-    # Runs on the 1st and 15th of every month at 1am
-    - cron: '00 1 1,15 * *'
+    # Runs on the 1st and 15th of every month at 2am CST (7am UTC)
+    - cron: '00 7 1,15 * *'
   push:
     branches: [main]
     paths: [dockerfiles/**]
