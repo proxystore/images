@@ -15,12 +15,12 @@ RUN apt-get update -y \
 && rm -rf /var/lib/apt/lists/*
 
 # install rdma-core
-RUN git clone -b v41.0 --depth 1 https://github.com/linux-rdma/rdma-core \
+RUN git clone -b v44.1 --depth 1 https://github.com/linux-rdma/rdma-core \
 && cd rdma-core \
 && bash build.sh
 
 # install ucx
-RUN git clone -b v1.13.1 --depth 1 https://github.com/openucx/ucx \
+RUN git clone -b v1.14.0 --depth 1 https://github.com/openucx/ucx \
 && cd ucx \
 && ./autogen.sh \
 && mkdir build \
@@ -30,7 +30,7 @@ RUN git clone -b v1.13.1 --depth 1 https://github.com/openucx/ucx \
 && make install
 
 # install libfabric
-RUN git clone -b v1.16.1 --depth 1 https://github.com/ofiwg/libfabric \
+RUN git clone -b v1.18.0 --depth 1 https://github.com/ofiwg/libfabric \
 && cd libfabric \
 && mkdir build \
 && ./autogen.sh \
@@ -82,7 +82,7 @@ RUN git clone --depth 1 https://github.com/pmodels/argobots \
 && make install
 
 # install mochi-margo
-RUN git clone -b v0.11.1 --depth 1 https://github.com/mochi-hpc/mochi-margo \
+RUN git clone -b v0.13.1 --depth 1 https://github.com/mochi-hpc/mochi-margo \
 && cd mochi-margo \
 && autoupdate \
 && ./prepare.sh \
