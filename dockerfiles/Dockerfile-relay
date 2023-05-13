@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION="3.10"
+ARG PYTHON_VERSION="3.11"
 ARG SSL_ARGS=""
 
 from python:${PYTHON_VERSION}-slim-buster
@@ -14,4 +14,4 @@ RUN pip install --pre "proxystore[endpoints]"
 
 EXPOSE 8765
 
-CMD [ "sh", "-c", "python -m proxystore.p2p.server --log-dir ./logs --log-level DEBUG $PROXYSTORE_SSL_ARGS" ]
+CMD [ "sh", "-c", "proxystore-relay --port 8765 --log-dir ./logs --log-level DEBUG $PROXYSTORE_SSL_ARGS" ]
