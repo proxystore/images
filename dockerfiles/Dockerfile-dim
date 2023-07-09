@@ -100,7 +100,6 @@ RUN apt-get update -y \
 && apt-get update -y \
 && apt-get install -y --no-install-recommends \
   python3-pip \
-  python3.7 python3.7-dev python3.7-venv \
   python3.8 python3.8-dev python3.8-venv \
   python3.9 python3.9-dev python3.9-venv \
   python3.10 python3.10-dev python3.10-venv \
@@ -119,17 +118,14 @@ RUN mkdir -p /home/root/opt/bin \
 ENV PATH="/home/root/opt/bin:$PATH"
 
 # install proxystore to pre-cache some packages
-RUN python3.7 -m venv /home/root/opt/venv3.7 \
-&& python3.8 -m venv /home/root/opt/venv3.8 \
+RUN python3.8 -m venv /home/root/opt/venv3.8 \
 && python3.9 -m venv /home/root/opt/venv3.9 \
 && python3.10 -m venv /home/root/opt/venv3.10 \
 && python3.11 -m venv /home/root/opt/venv3.11 \
-&& /home/root/opt/venv3.7/bin/pip install proxystore[dev,endpoints] \
-&& /home/root/opt/venv3.8/bin/pip install proxystore[dev,endpoints] \
-&& /home/root/opt/venv3.9/bin/pip install proxystore[dev,endpoints] \
-&& /home/root/opt/venv3.10/bin/pip install proxystore[dev,endpoints] \
-&& /home/root/opt/venv3.11/bin/pip install proxystore[dev,endpoints] \
-&& rm -rf /home/root/opt/venv3.7 \
+&& /home/root/opt/venv3.8/bin/pip install proxystore[all,dev] \
+&& /home/root/opt/venv3.9/bin/pip install proxystore[all,dev] \
+&& /home/root/opt/venv3.10/bin/pip install proxystore[all,dev] \
+&& /home/root/opt/venv3.11/bin/pip install proxystore[all,dev] \
 && rm -rf /home/root/opt/venv3.9 \
 && rm -rf /home/root/opt/venv3.9 \
 && rm -rf /home/root/opt/venv3.10 \
