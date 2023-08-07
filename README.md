@@ -52,17 +52,20 @@ This image installs the latest pre-release of ProxyStore from PyPI.
 ### Pull and Run
 
 ```bash
-$ docker run --rm -it -p 8765:8765 --name relay ghcr.io/proxystore/proxystore-relay
+$ docker run --rm -it -p 8700:8700 --name relay ghcr.io/proxystore/proxystore-relay
 ```
 
 ### Build and Run
 
 ```bash
 $ docker build -t proxystore-relay -f dockerfiles/Dockerfile-relay .
-$ docker run --rm -it -p 8765:8765 --name relay proxystore-relay
+$ docker run --rm -it -p 8700:8700 --name relay proxystore-relay
 ```
 
 To run with SSL/TLS:
 ```bash
-$ docker run --rm -it -p 8765:8765 -e PROXYSTORE_SSL_ARGS="--certfile /path/to/certfile --keyfile /path/to/keyfile" --name relay proxystore-relay
+$ docker run --rm -it -p 8700:8700 -e PROXYSTORE_SSL_ARGS="--certfile /path/to/certfile --keyfile /path/to/keyfile" --name relay proxystore-relay
 ```
+
+The log directory and level can be changed by setting `$PROXYSTORE_LOG_DIR` and
+`$PROXYSTORE_LOG_LEVEL`, respectively.

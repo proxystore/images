@@ -1,17 +1,21 @@
 ARG PYTHON_VERSION="3.11"
 ARG SSL_ARGS=""
+ARG LOG_DIR="./logs"
+ARG LOG_LEVEL="DEBUG"
 
 from python:${PYTHON_VERSION}-slim-buster
 
 ENV PROXYSTORE_SSL_ARGS $SSL_ARGS
+ENV PROXYSTORE_LOG_DIR $LOG_DIR
+ENV PROXYSTORE_LOG_LEVEL $LOG_LEVEL
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends gcc g++ \
   && apt-get clean autoclean \
   && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --pre "proxystore[endpoints]"
+RUN pip install "proxystore[endpoints]"
 
-EXPOSE 8765
+EXPOSE 8700
 
-CMD [ "sh", "-c", "proxystore-relay --port 8765 --log-dir ./logs --log-level DEBUG $PROXYSTORE_SSL_ARGS" ]
+CMD [ "sh", "-c", "proxystore-relay --port 8700 --log-dir $LOG_DIR --log-level $LOG_LEVEL $PROXYSTORE_SSL_ARGS" ]
