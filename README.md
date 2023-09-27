@@ -45,27 +45,33 @@ All Python versions are available and `tox` is pre-added to the `$PATH`.
 ## Dockerfile-relay
 
 Relay (signaling) server runner image for testing p2p communication.
-This image installs the latest pre-release of ProxyStore from PyPI.
-
-**Warning:** this is not intended for production use and by default runs with no security features.
+This image installs the latest release of ProxyStore from PyPI.
 
 ### Pull and Run
 
+The container defaults to exposing port 8700 and starting the relay using
+a configuration file mounted at `/data/config.toml`. The configuration file
+location can be overridden via the `CONFIG` environment variable passed to
+`docker run`. E.g., `-e CONFIG=/path/in/container/to/config.toml`. Update
+the `-v $(pwd)/data:/data` mount depending on the location of your
+configuration file.
+
 ```bash
-$ docker run --rm -it -p 8700:8700 --name relay ghcr.io/proxystore/proxystore-relay
+$ docker run --rm -it -p 8700:8700 -v $(pwd)/data:/data --name relay ghcr.io/proxystore/proxystore-relay
 ```
+
+All configuration of the relay server should be done via the configuration
+file.
 
 ### Build and Run
 
+When building the container, the following build arguments can be specified
+(listed are the default values).
+* `--build-arg PYTHON_VERSION=3.11`
+* `--build-arg CONFIG=/data/config.toml`
+* `--build-arg PORT=8700`
+
 ```bash
 $ docker build -t proxystore-relay -f dockerfiles/Dockerfile-relay .
-$ docker run --rm -it -p 8700:8700 --name relay proxystore-relay
+$ docker run --rm -it -p 8700:8700 -v $(pwd)/data:/data --name relay proxystore-relay
 ```
-
-To run with SSL/TLS:
-```bash
-$ docker run --rm -it -p 8700:8700 -e PROXYSTORE_SSL_ARGS="--certfile /path/to/certfile --keyfile /path/to/keyfile" --name relay proxystore-relay
-```
-
-The log directory and level can be changed by setting `$PROXYSTORE_LOG_DIR` and
-`$PROXYSTORE_LOG_LEVEL`, respectively.
