@@ -104,12 +104,13 @@ RUN apt-get update -y \
   python3.9 python3.9-dev python3.9-venv \
   python3.10 python3.10-dev python3.10-venv \
   python3.11 python3.11-dev python3.11-venv \
+  python3.12 python3.12-dev python3.12-venv \
 && apt-get clean autoclean \
 && rm -rf /var/lib/apt/lists/*
 
 # add tox install to path via virtualenv
 RUN mkdir -p /home/root/opt/bin \
-&& python3.9 -m venv /home/root/opt/venv \
+&& python3.11 -m venv /home/root/opt/venv \
 && . /home/root/opt/venv/bin/activate \
 && pip install --upgrade setuptools tox virtualenv \
 && cd /home/root/opt/bin \
@@ -122,13 +123,16 @@ RUN python3.8 -m venv /home/root/opt/venv3.8 \
 && python3.9 -m venv /home/root/opt/venv3.9 \
 && python3.10 -m venv /home/root/opt/venv3.10 \
 && python3.11 -m venv /home/root/opt/venv3.11 \
+&& python3.12 -m venv /home/root/opt/venv3.12 \
 && /home/root/opt/venv3.8/bin/pip install proxystore[all,dev] \
 && /home/root/opt/venv3.9/bin/pip install proxystore[all,dev] \
 && /home/root/opt/venv3.10/bin/pip install proxystore[all,dev] \
 && /home/root/opt/venv3.11/bin/pip install proxystore[all,dev] \
+&& /home/root/opt/venv3.12/bin/pip install proxystore[all,dev] \
 && rm -rf /home/root/opt/venv3.9 \
 && rm -rf /home/root/opt/venv3.9 \
 && rm -rf /home/root/opt/venv3.10 \
-&& rm -rf /home/root/opt/venv3.11
+&& rm -rf /home/root/opt/venv3.11 \
+&& rm -rf /home/root/opt/venv3.12
 
 ENV LD_LIBRARY_PATH="/usr/local/lib"
